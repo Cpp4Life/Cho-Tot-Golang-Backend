@@ -4,18 +4,18 @@ USE cho_tot;
 CREATE TABLE IF NOT EXISTS users
 (
     id        INT          NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    username  NVARCHAR(50) NOT NULL UNIQUE,
-    passwd    VARCHAR(50)  NOT NULL,
+    phone     VARCHAR(12)  NOT NULL UNIQUE,
+    username  VARCHAR(50)  NOT NULL,
+    passwd    VARCHAR(255) NOT NULL,
     address   VARCHAR(255),
     email     VARCHAR(50) UNIQUE,
-    phone     VARCHAR(12) UNIQUE,
     user_role BOOLEAN DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS products
 (
-    id           INT           NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    product_name NVARCHAR(255) NOT NULL,
+    id           INT          NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    product_name VARCHAR(255) NOT NULL UNIQUE,
     user_id      INT,
     cat_id       VARCHAR(10),
     type_id      VARCHAR(10),
@@ -23,20 +23,20 @@ CREATE TABLE IF NOT EXISTS products
     state        BOOLEAN,
     created_time DATETIME,
     expired_time DATETIME,
-    address      NVARCHAR(255),
-    content      NVARCHAR(255)
+    address      VARCHAR(255),
+    content      VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS categories
 (
-    id       VARCHAR(10)  NOT NULL PRIMARY KEY,
-    cat_name NVARCHAR(50) NOT NULL
+    id       VARCHAR(10) NOT NULL PRIMARY KEY,
+    cat_name VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS sub_categories
 (
-    id        VARCHAR(10)  NOT NULL PRIMARY KEY,
-    type_name NVARCHAR(50) NOT NULL,
+    id        VARCHAR(10) NOT NULL PRIMARY KEY,
+    type_name VARCHAR(50) NOT NULL UNIQUE,
     cat_id    VARCHAR(10)
 );
 
