@@ -14,8 +14,11 @@ var (
 
 	userRepo repository.UserRepository = repository.NewUserRepository(db)
 
+	jwtService  service.JWTService  = service.NewJWTService()
+	authService service.AuthService = service.NewAuthService(userRepo)
 	userService service.UserService = service.NewUserService(userRepo)
 
+	authController controller.AuthController = controller.NewAuthController(authService, jwtService)
 	userController controller.UserController = controller.NewUserController(userService)
 )
 
@@ -23,7 +26,13 @@ func main() {
 	defer config.CloseDatabase(db)
 	r := gin.Default()
 
-	userRoutes := r.Group("/user")
+	authRoutes := r.Group("/cho-tot/auth")
+	{
+		authRoutes.POST("/login", authController.Login)
+		authRoutes.POST("/register", authController.Register)
+	}
+
+	userRoutes := r.Group("/cho-tot/user")
 	{
 		userRoutes.GET("/profile", userController.Profile)
 	}

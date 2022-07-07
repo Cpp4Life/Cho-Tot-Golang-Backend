@@ -3,13 +3,13 @@ USE cho_tot;
 
 CREATE TABLE IF NOT EXISTS users
 (
-    id        INT          NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    phone     VARCHAR(12)  NOT NULL UNIQUE,
-    username  VARCHAR(50)  NOT NULL,
-    passwd    VARCHAR(255) NOT NULL,
-    address   VARCHAR(255),
-    email     VARCHAR(50) UNIQUE,
-    user_role BOOLEAN DEFAULT 0
+    id       INT          NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    phone    VARCHAR(12)  NOT NULL UNIQUE,
+    username VARCHAR(50)  NOT NULL,
+    passwd   VARCHAR(255) NOT NULL,
+    address  VARCHAR(255),
+    email    VARCHAR(50) UNIQUE,
+    is_admin BOOLEAN DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS products

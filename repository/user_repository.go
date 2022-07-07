@@ -2,11 +2,15 @@ package repository
 
 import (
 	"ChoTot/entity"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
 	UserProfile(id int) (*entity.User, error)
+	VerifyCredential(phone string) (*entity.User, error)
+	IsDuplicatePhone(phone string) (bool, error)
+	InsertUser(user *entity.User) (*entity.User, error)
 }
 
 type userConnection struct {
@@ -23,4 +27,39 @@ func (db *userConnection) UserProfile(id int) (*entity.User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (db *userConnection) VerifyCredential(phone string) (*entity.User, error) {
+	user := &entity.User{}
+	if err := db.conn.Where("phone = ?", phone).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (db *userConnection) IsDuplicatePhone(phone string) (bool, error) {
+	user := &entity.User{}
+	if err := db.conn.Where("phone = ?", phone).First(&user).Error; err != nil {
+		return false, err
+	}
+	if user.Phone == "" {
+		return false, nil
+	}
+	return true, nil
+}
+
+func (db *userConnection) InsertUser(user *entity.User) (*entity.User, error) {
+	user.Passwd = hashAndSalt([]byte(user.Passwd))
+	if err := db.conn.Create(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func hashAndSalt(passwd []byte) string {
+	hash, err := bcrypt.GenerateFromPassword(passwd, bcrypt.DefaultCost)
+	if err != nil {
+		panic(err.Error())
+	}
+	return string(hash)
 }
