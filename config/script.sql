@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users
     username VARCHAR(50)  NOT NULL,
     passwd   VARCHAR(255) NOT NULL,
     address  VARCHAR(255),
-    email    VARCHAR(50) UNIQUE,
+    email    VARCHAR(50),
     is_admin BOOLEAN DEFAULT 0
 );
 

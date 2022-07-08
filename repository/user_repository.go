@@ -11,6 +11,7 @@ type UserRepository interface {
 	VerifyCredential(phone string) (*entity.User, error)
 	IsDuplicatePhone(phone string) (bool, error)
 	InsertUser(user *entity.User) (*entity.User, error)
+	UpdateUser(user *entity.User) (*entity.User, error)
 }
 
 type userConnection struct {
@@ -50,7 +51,14 @@ func (db *userConnection) IsDuplicatePhone(phone string) (bool, error) {
 
 func (db *userConnection) InsertUser(user *entity.User) (*entity.User, error) {
 	user.Passwd = hashAndSalt([]byte(user.Passwd))
-	if err := db.conn.Create(user).Error; err != nil {
+	if err := db.conn.Create(&user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (db *userConnection) UpdateUser(user *entity.User) (*entity.User, error) {
+	if err := db.conn.Model(&entity.User{}).Where("id = ?", user.Id).Updates(map[string]interface{}{"address": user.Address, "username": user.Username, "email": user.Email}).Error; err != nil {
 		return nil, err
 	}
 	return user, nil

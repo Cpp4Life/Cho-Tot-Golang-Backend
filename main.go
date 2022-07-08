@@ -3,6 +3,7 @@ package main
 import (
 	"ChoTot/config"
 	"ChoTot/controller"
+	"ChoTot/middleware"
 	"ChoTot/repository"
 	"ChoTot/service"
 	"github.com/gin-gonic/gin"
@@ -19,7 +20,7 @@ var (
 	userService service.UserService = service.NewUserService(userRepo)
 
 	authController controller.AuthController = controller.NewAuthController(authService, jwtService)
-	userController controller.UserController = controller.NewUserController(userService)
+	userController controller.UserController = controller.NewUserController(userService, jwtService)
 )
 
 func main() {
@@ -32,9 +33,10 @@ func main() {
 		authRoutes.POST("/register", authController.Register)
 	}
 
-	userRoutes := r.Group("/cho-tot/user")
+	userRoutes := r.Group("/cho-tot/user", middleware.AuthorizeJWT(jwtService))
 	{
 		userRoutes.GET("/profile", userController.Profile)
+		userRoutes.PATCH("/update", userController.Update)
 	}
 
 	r.Run(":8080")
