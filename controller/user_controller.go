@@ -12,6 +12,7 @@ import (
 type UserController interface {
 	Profile(c *gin.Context)
 	Update(c *gin.Context)
+	Products(c *gin.Context)
 }
 
 type userController struct {
@@ -58,6 +59,20 @@ func (ctrl *userController) Update(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"user": newUser})
+}
+
+func (ctrl *userController) Products(c *gin.Context) {
+	userId, err := ctrl.parseToken(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	products, err := ctrl.userService.UserProducts(userId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"products": products})
 }
 
 func (ctrl *userController) parseToken(c *gin.Context) (int, error) {

@@ -12,6 +12,7 @@ type UserRepository interface {
 	IsDuplicatePhone(phone string) (bool, error)
 	InsertUser(user *entity.User) (*entity.User, error)
 	UpdateUser(user *entity.User) (*entity.User, error)
+	UserProducts(id int) ([]entity.Product, error)
 }
 
 type userConnection struct {
@@ -62,6 +63,14 @@ func (db *userConnection) UpdateUser(user *entity.User) (*entity.User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (db *userConnection) UserProducts(id int) ([]entity.Product, error) {
+	var products []entity.Product
+	if err := db.conn.Model(&entity.Product{}).Where("user_id = ?", id).Find(&products).Error; err != nil {
+		return nil, err
+	}
+	return products, nil
 }
 
 func hashAndSalt(passwd []byte) string {

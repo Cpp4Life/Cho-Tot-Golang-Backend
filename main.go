@@ -37,6 +37,7 @@ func main() {
 	{
 		userRoutes.GET("/profile", userController.Profile)
 		userRoutes.PATCH("/update", userController.Update)
+		userRoutes.GET("/products/", userController.Products)
 	}
 
 	r.Run(":8080")

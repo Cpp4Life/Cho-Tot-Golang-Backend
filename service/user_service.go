@@ -10,6 +10,7 @@ import (
 type UserService interface {
 	UserProfile(id int) (*entity.User, error)
 	Update(user dto.UserUpdateDTO) (*entity.User, error)
+	UserProducts(id int) ([]entity.Product, error)
 }
 
 type userService struct {
@@ -30,4 +31,8 @@ func (svc *userService) Update(user dto.UserUpdateDTO) (*entity.User, error) {
 		return nil, err
 	}
 	return svc.userRepo.UpdateUser(newUser)
+}
+
+func (svc *userService) UserProducts(id int) ([]entity.Product, error) {
+	return svc.userRepo.UserProducts(id)
 }
